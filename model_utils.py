@@ -3,9 +3,18 @@ import streamlit as st
 import joblib
 import pandas as pd
 
+import umap
+
 from transformers import AutoTokenizer, AutoModelForCausalLM
 
-from llama_index import StorageContext, ServiceContext, load_index_from_storage
+from llama_index import (
+    StorageContext,
+    ServiceContext,
+    load_index_from_storage,
+    download_loader,
+    VectorStoreIndex,
+)
+
 from transformers import AutoTokenizer, AutoModelForCausalLM
 from llama_index.embeddings import HuggingFaceEmbedding
 from llama_index.prompts.prompts import SimpleInputPrompt
@@ -19,8 +28,9 @@ from constants import (
 model_name  = "meta-llama/Llama-2-7b-chat-hf"
 auth_token  = "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"
 emb_name    = "sentence-transformers/all-MiniLM-L6-v2"
-storage_dir = "/home/ubuntu/chatbot/dev_notebooks/storage"
+storage_dir = "/home/ubuntu/chatbot/media/storage"
 reducer_dir = '/home/ubuntu/chatbot/dev_notebooks/umap_reducer.joblib'
+pdf_dir     = '/home/ubuntu/chatbot/media/Accenture-Fiscal-2023-Annual-Report.pdf'
 
 @st.cache_resource
 def get_service_context():
@@ -55,43 +65,56 @@ def get_service_context():
 
     # Create new service context instance
     service_context = ServiceContext.from_defaults(
-        llm         = llm,
-        embed_model = embed_model,
-        )
+        llm           = llm,
+        embed_model   = embed_model,
+        chunk_overlap = 20,
+        chunk_size    = 256,
+    )
 
     return service_context
 
 @st.cache_resource
+def make_index():
+
+    loader = download_loader("PDFReader")
+    loader = loader()
+
+    documents = loader.load_data(file=pdf_dir)
+
+    for doc in documents:
+
+        doc.text_template = '{content}'
+
+    index = VectorStoreIndex.from_documents(documents)
+
+    st.session_state["index"] = index
+
+@st.cache_resource
 def get_query_engine(num_chuncks):
 
-    context = StorageContext.from_defaults(persist_dir=storage_dir)
-    index   = load_index_from_storage(context)
-    engine  = index.as_query_engine(similarity_top_k=num_chuncks)
+    index = st.session_state["index"]
+    engine = index.as_query_engine(similarity_top_k=num_chuncks)
 
     return engine
 
 @st.cache_resource
-def get_reducer():
+def make_reducer():
 
-    return joblib.load(reducer_dir)
+    print('making reducer...')
 
-@st.cache_data
-def get_emb_space():
+    index = st.session_state["index"]
 
-    query_engine = get_query_engine()
-    vec_dict = query_engine._retriever._vector_store._data.embedding_dict
-    emb = [vec_dict[key] for key in vec_dict]
-    emb = pd.DataFrame(emb, index=vec_dict.keys())
+    idx=[]
+    embs=[]
 
-    return emb
+    for key, emb in index._vector_store._data.embedding_dict.items():
 
-@st.cache_data
-def reduce_emb_space():
+        idx.append(key)
+        embs.append(emb)
 
-    reducer = get_reducer()
-    emb_space = get_emb_space()
-    emb_red = reducer.transform(emb_space.values)
+    reducer = umap.UMAP(n_components=3, random_state=42)
+    embs = reducer.fit_transform(embs)
+    embs = pd.DataFrame(embs, index=idx, columns=['col0', 'col1', 'col2'])
 
-    emb_red = pd.DataFrame(emb_red, index=emb_space.index, columns=[f'col_{i}' for i in range(3)])
-
-    return emb_red
+    st.session_state["reducer"] = reducer
+    st.session_state["embeddings_reduced"] = embs

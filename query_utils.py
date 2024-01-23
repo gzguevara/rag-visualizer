@@ -14,6 +14,4 @@ def parse_query(prompt, num_chuncks):
 
         return response, box_height
 
-    else:
-
-        return None, None
+    return None, None
