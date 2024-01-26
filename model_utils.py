@@ -112,7 +112,7 @@ def make_reducer():
         idx.append(key)
         embs.append(emb)
 
-    reducer = umap.UMAP(n_components=3, random_state=42)
+    reducer = umap.UMAP(n_components=3, random_state=23)
     embs = reducer.fit_transform(embs)
     embs = pd.DataFrame(embs, index=idx, columns=['col0', 'col1', 'col2'])
 

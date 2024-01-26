@@ -34,16 +34,12 @@ make_reducer()
 
 ############### Start App ################
 st.header("Job interview Accenture ML Architect 👨‍💻🤖", divider='grey')
-st.markdown("#### Visualise different RAG methods")
+st.markdown("#### Visualise Naive RAG")
 
 col3, col4 = st.columns([0.8, 0.2])
 prompt = col3.text_input("Ask Anything About Accenture")
 
-top_k    = col4.number_input("Number of Chunks", value=5, min_value=1, max_value=10, step=1)
-strategy = col4.selectbox("Select RAG method",
-                            ["Naive",
-                            "Query Expansion - Multiple Qns",
-                            "Query Expansion - Hypothetical Ans"])
+top_k    = col4.number_input("Number of Chunks", value=3, min_value=1, max_value=10, step=1)
 
 response, box_height = parse_query(prompt, top_k)
 with col3:
@@ -58,9 +54,9 @@ col7, col8, col9 = st.columns([2, 4, 2])
 if response:
 
     with col7:
-        st.write("### Node Texts")
+        st.write(f"### Nodes")
         for node in response.source_nodes:
-            st.text_area(node.id_, node.text, height=100)
+            st.text_area(f'ID: {node.id_}, Score: {node.score:.5f}', node.text, height=100)
 
 # Your main content goes in the middle column
 with col8, st.container(height=800):
