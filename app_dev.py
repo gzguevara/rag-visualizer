@@ -49,7 +49,7 @@ with col3:
 col5, _ ,col6 = st.columns([0.75, 0.05, 0.2])
 
 # Create three columns
-col7, col8, col9 = st.columns([2, 4, 2])
+col7, col8, col9 = st.columns([1.5, 5, 1.5])
 
 if response:
 
