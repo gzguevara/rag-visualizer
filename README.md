@@ -4,7 +4,7 @@
 This RAG Visualizer offers a comprehensive exploration of a 3D embedding space in an easy-to-distibute streamlit app. Utilizing DBSCAN for cluster identification, the visualizer employs the underlying LLM to describte the semanticis of these clusters. Users can interactively query chunks and visualize both the input prompt and the retrieved chunks. RAG Visualizer serves as a toy example for your LLMOps pipeline. RAG Visualizer enables a deep understanding of clusters, revealing meaningful patterns and enchancing interpretability.
 
 <p align="center">
-  <img src="media/visual.gif" alt="Funny GIF">
+  <img src="media/visual.gif" width="550">
 </p>
 
 
