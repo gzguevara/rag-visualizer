@@ -177,7 +177,7 @@ def get_query_engine(num_chuncks):
 @st.cache_data
 def parse_query(prompt, num_chuncks):
 
-    if prompt is not '':
+    if prompt != '':
 
         engine = get_query_engine(num_chuncks)
 
@@ -194,7 +194,7 @@ def plot_embeddings(prompt, response):
     data = st.session_state["embeddings_reduced"]
     data.cluster = data.cluster.astype(str)
 
-    if prompt is not None and response is not None:
+    if prompt !=  None and response !=  None:
 
         reducer = st.session_state["reducer"]
         context = st.session_state["context"]
@@ -223,8 +223,11 @@ def plot_embeddings(prompt, response):
     fig.update_traces(marker_size=3)
     fig.update_layout(width=850, height=500)
     fig.update_traces(showlegend=False)
+    # Make non assigned chunks grey
     fig.for_each_trace(lambda t: t.update(marker=dict(color='grey')) if '-1' in t['legendgroup'] else t)
-    fig.for_each_trace(lambda t: t.update(marker=dict(size=5, color='#FFFFF8')) if 'retrieved' in t['legendgroup'] else t)
-    fig.for_each_trace(lambda t: t.update(marker=dict(size=10, color='#FFFFF8')) if 'prompt' in t['legendgroup'] else t)
+    fig.for_each_trace(lambda t: t.update(marker=dict(color='#75FFB5')) if t['marker']['color'] == '#000004' else t)
+    #Make prompt and retrieved nodes red
+    fig.for_each_trace(lambda t: t.update(marker=dict(size=7, color='red', symbol='diamond')) if 'retrieved' in t['legendgroup'] else t)
+    fig.for_each_trace(lambda t: t.update(marker=dict(size=12, color='red', symbol='diamond')) if 'prompt' in t['legendgroup'] else t)
 
     return st.plotly_chart(fig, use_container_width=False)

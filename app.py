@@ -12,7 +12,7 @@ from model_utils import (
 )
 
 st.set_page_config(
-    page_title="AccRAG",
+    page_title="RAG",
     page_icon="🤖",
     layout="wide",
     initial_sidebar_state="expanded",
@@ -31,43 +31,43 @@ st_initilize_session_state_as_none(static_objects)
 load_models()
 
 # Start Rendering
-st.markdown("<h1 style='text-align: center; color: white;'>Visual RAG Inspecto with Llama Index 🦙</h1>", unsafe_allow_html=True)
+st.markdown("<h1 style='text-align: center; color: white;'>Visual RAG Inspector with Llama Index 🦙</h1>", unsafe_allow_html=True)
 context_str = f'Curently configured with LLM: {st.session_state["llm"].model_name} and Embedding Model: {st.session_state["embed_model"].model_name}'
 st.markdown(f"<h5 style='text-align: center; color: white;'>{context_str}</h5>", unsafe_allow_html=True)
 
 # App Settings
 st.markdown("<br><br>", unsafe_allow_html=True)
-st.markdown("#### Upload PDF File &  Stettings")
 
-col1, col2, col3, col4 = st.columns(4)
+col1, col2, col3 = st.columns([1,1,2])
 with col1:
+    st.markdown("#### Upload PDF File")
     uploaded_pdf = st.file_uploader("Upload a PDF", type="pdf", accept_multiple_files=False)
 with col2:
+    st.markdown("#### RAG Stettings")
     chunk_size = st.number_input("Chunk Size", value=1024, min_value=128, max_value=2048, step=1)
-with col3:
     top_k = st.number_input("Number of Chunks for RAG", value=3, min_value=1, max_value=10, step=1)
-with col4:
     cluster_chunks = st.number_input("Number of Chunks to Describe Cluster", value=3, min_value=1, max_value=10, step=1)
+with col3:
+    st.markdown("#### LLM Interaction")
+    prompt = st.text_input(label = "Question Regarding PDF")
 
-# Create a button
-if st.button('Build!'):
-    make_service_context(chunk_size)
-    make_index(uploaded_pdf)
-    make_embeddings()
+    response, box_height = parse_query(prompt, top_k)
 
-# LLM interaction
-st.markdown("<br><br>", unsafe_allow_html=True)
-st.markdown("#### LLM Interaction")
-prompt = st.text_input(label = "Question Regarding PDF")
+    st.text_area(
+        label    = "Model Answer",
+        value    = response.response if response is not None else None,
+        height   = box_height if box_height is not None else 120,
+        disabled = True,
+        )
 
-response, box_height = parse_query(prompt, top_k)
+with col1:
 
-st.text_area(
-    label    = "Model Answer",
-    value    = response.response if response is not None else None,
-    height   = box_height if box_height is not None else None,
-    disabled = True,
-    )
+
+        # Create a button
+    if st.button('Click Here to Build the App!', use_container_width=True):
+        make_service_context(chunk_size)
+        make_index(uploaded_pdf)
+        make_embeddings()
 
 # Visual Inspection
 st.markdown("<br><br>", unsafe_allow_html=True)
