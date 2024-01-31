@@ -1,7 +1,7 @@
 # RAG Visualizer
 
 ## Overview
-This RAG Visualizer offers a comprehensive exploration of a 3D embedding space in an easy-to-distibute streamlit app. Chunks are clustered by DBSCAN and described, using a subset of chunks, passed to the underlying LLM. Users can interactively prompt the LLM using LlamaIndex for navie RAG. The prmpt and retrieved chunks are visualized and highlighted. RAG Visualizer serves as a toy example for  your LLMOps pipeline by describing of clusters, revealing meaningful patterns and enchancing interpretability.
+This RAG Visualizer offers a comprehensive exploration of a 3D embedding space in an easy-to-distibute streamlit app. Chunks are clustered by DBSCAN and described, using a subset of chunks, passed to the underlying LLM. Users can interactively prompt the LLM using LlamaIndex for navie RAG. The prompt and retrieved chunks are visualized and highlighted. RAG Visualizer serves as a toy example for  your LLMOps pipeline by describing of clusters, revealing meaningful patterns and enchancing interpretability.
 
 <p align="center">
   <img src="media/visual.gif" width="750">
