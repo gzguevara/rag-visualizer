@@ -1,7 +1,7 @@
 # RAG Visualizer
 
 ## Overview
-This RAG Visualizer offers a comprehensive exploration of a 3D embedding space in an easy-to-distibute streamlit app. Utilizing DBSCAN for cluster identification, the visualizer employs the underlying LLM to describte the semanticis of these clusters. Users can interactively query chunks and visualize both the input prompt and the retrieved chunks. RAG Visualizer serves as a toy example for your LLMOps pipeline. RAG Visualizer enables a deep understanding of clusters, revealing meaningful patterns and enchancing interpretability.
+This RAG Visualizer offers a comprehensive exploration of a 3D embedding space in an easy-to-distibute streamlit app. Chunks are clustered by DBSCAN and described, using a subset of chunks, passed to the underlying LLM. Users can interactively prompt the LLM using LlamaIndex for navie RAG. The prmpt and retrieved chunks are visualized and highlighted. RAG Visualizer serves as a toy example for  your LLMOps pipeline by describing of clusters, revealing meaningful patterns and enchancing interpretability.
 
 <p align="center">
   <img src="media/visual.gif" width="750">
@@ -36,7 +36,7 @@ This RAG Visualizer offers a comprehensive exploration of a 3D embedding space i
 By default, Streamlit operates on port 8501. If deploying to the cloud, ensure explicit traffic allowance on port 8501 and use the external IP address of your instance in the format: `external_ip:8501`.
 
 ## Technical Stack
-The current LLM is `meta-llama/Llama-2-7b-chat-hf` in 8bit format and embedding model is `sentence-transformers/all-MiniLM-L6-v2`. Therefore, your HF token will need to have access to the Llama2 models. You can use other LLMs. However, make sure to configure the system prompt for your given LLM. The query engine is [LlamaIndex](https://github.com/run-llama/llama_index) This app is optimized to run efficiently on a single Nvidia T4 GPU, ensuring reasonable response times. Take these considerations into account for a seamless deployment experience.
+The current LLM is `meta-llama/Llama-2-7b-chat-hf` in 8bit format and embedding model is `sentence-transformers/all-MiniLM-L6-v2`. Therefore, your HF token will need to have access to the Llama2 models. You can use other LLMs. However, make sure to configure the system prompt for your given LLM. The query engine is [LlamaIndex](https://github.com/run-llama/llama_index). This app is optimized to run efficiently on a single Nvidia T4 GPU, ensuring reasonable response times. Take these considerations into account for a seamless deployment experience.
 
 ## License
 
